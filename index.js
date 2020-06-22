@@ -1,6 +1,9 @@
 const express = require('express');
 const app = express();
 
+const bodyParser = require('body-parser');
+const jsonParser = bodyParser.json();
+
 const mongoose = require('mongoose');
 mongoose.connect('mongodb+srv://keshav:FMoyhiGQmakj5Npy@space-invaders-0xdmm.mongodb.net/space-invaders', { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -90,7 +93,7 @@ app.get("/setScores/", function(req, res) {
     });
 });
 
-app.post("/setScoresPOST/", function(req, res) {
+app.post("/setScoresPOST/", jsonParser, function(req, res) {
     res.send(req.body);
 });
 
