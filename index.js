@@ -70,8 +70,9 @@ app.post("/setScores/", jsonParser, function(req, res) {
                             name: curName,
                             score: curScore
                         });
-                    while(scores.length > 10)
-                        scores.pop();
+                        while(scores.length > 10) {
+                            scores.pop();
+                        }
                     }
                 }
                 else {
