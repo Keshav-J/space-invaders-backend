@@ -25,6 +25,19 @@ app.get("/getScores/", function(req, res) {
 
 });
 
+app.post("/getScoresPOST/", function(req, res) {
+
+    Score.find(function(err, scores) {
+        if(err) {
+            res.send('err');
+        }
+        else {
+            res.send(scores);
+        }
+    });
+
+});
+
 app.get("/setScores/", function(req, res) {
     console.log(req.query);
     
