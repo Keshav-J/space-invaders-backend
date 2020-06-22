@@ -90,7 +90,7 @@ app.get("/setScores/", function(req, res) {
     });
 });
 
-app.get("/setScoresPOST/", function(req, res) {
+app.post("/setScoresPOST/", function(req, res) {
     res.send(req.params);
 });
 
