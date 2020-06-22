@@ -94,7 +94,54 @@ app.get("/setScores/", function(req, res) {
 });
 
 app.post("/setScoresPOST/", jsonParser, function(req, res) {
-    res.send(req.body);
+    const curName = req.body.name;
+    const curScore = req.body.score;
+    
+    Score.find(function(err, scores) {
+        if(err) {
+            res.send('err');
+        }
+        else {
+            Score.remove({}).then(function() {
+                if(scores.length != 0) {
+                    var flag = false;
+                    for(var i=0 ; i<scores.length ; ++i) {
+                        if(curScore >= scores[i].score) {
+                            scores.splice(i, 0, {
+                                _id  : i+1,
+                                name : curName,
+                                score: curScore
+                            });
+                            flag = true;
+                            break;
+                        }
+                    }
+                    if(scores.length > 10)
+                        scores.pop();
+                    if(!flag && scores.length<10) {
+                        scores.push({
+                            _id  : i+1,
+                            name: curName,
+                            score: curScore
+                        });
+                    }
+                }
+                else {
+                    scores.push({
+                        _id  : 1,
+                        name: curName,
+                        score: curScore
+                    });
+                }
+            
+                for(i=0 ; i<scores.length ; ++i)
+                    scores[i]._id = i+1;
+
+                Score.insertMany(scores)
+                    .then(res.send(scores));
+            });
+        }
+    });
 });
 
 
