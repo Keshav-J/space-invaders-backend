@@ -90,6 +90,10 @@ app.get("/setScores/", function(req, res) {
     });
 });
 
+app.get("/setScoresPOST/", function(req, res) {
+    res.send(req.params);
+});
+
 
 app.listen(process.env.PORT || 3000, function() {
     console.log('Server started at port: 3000');
