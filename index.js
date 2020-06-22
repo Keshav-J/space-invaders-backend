@@ -91,7 +91,7 @@ app.get("/setScores/", function(req, res) {
 });
 
 app.post("/setScoresPOST/", function(req, res) {
-    res.send(req);
+    res.send('hello');
 });
 
 
