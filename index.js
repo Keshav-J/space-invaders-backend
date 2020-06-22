@@ -28,7 +28,7 @@ app.get("/getScores/", function(req, res) {
 
 });
 
-app.post("/getScoresPOST/", function(req, res) {
+app.post("/getScores/", function(req, res) {
 
     Score.find(function(err, scores) {
         if(err) {
@@ -41,59 +41,7 @@ app.post("/getScoresPOST/", function(req, res) {
 
 });
 
-app.get("/setScores/", function(req, res) {
-    console.log(req.query);
-    
-    const curName = req.query.name;
-    const curScore = req.query.score;
-    
-    Score.find(function(err, scores) {
-        if(err) {
-            res.send('err');
-        }
-        else {
-            Score.remove({}).then(function() {
-                if(scores.length != 0) {
-                    var flag = false;
-                    for(var i=0 ; i<scores.length ; ++i) {
-                        if(curScore >= scores[i].score) {
-                            scores.splice(i, 0, {
-                                _id  : i+1,
-                                name : curName,
-                                score: curScore
-                            });
-                            flag = true;
-                            break;
-                        }
-                    }
-                    if(scores.length > 10)
-                        scores.pop();
-                    if(!flag && scores.length<10) {
-                        scores.push({
-                            _id  : i+1,
-                            name: curName,
-                            score: curScore
-                        });
-                    }
-                }
-                else {
-                    scores.push({
-                        _id  : 1,
-                        name: curName,
-                        score: curScore
-                    });
-                }
-            
-                for(i=0 ; i<scores.length ; ++i)
-                    scores[i]._id = i+1;
-
-                Score.insertMany(scores).then(res.send('req.body'));
-            });
-        }
-    });
-});
-
-app.post("/setScoresPOST/", jsonParser, function(req, res) {
+app.post("/setScores/", jsonParser, function(req, res) {
     const curName = req.body.name;
     const curScore = req.body.score;
     
@@ -116,14 +64,14 @@ app.post("/setScoresPOST/", jsonParser, function(req, res) {
                             break;
                         }
                     }
-                    if(scores.length > 10)
-                        scores.pop();
-                    if(!flag && scores.length<10) {
+                    if(!flag) {
                         scores.push({
                             _id  : i+1,
                             name: curName,
                             score: curScore
                         });
+                    while(scores.length > 10)
+                        scores.pop();
                     }
                 }
                 else {
