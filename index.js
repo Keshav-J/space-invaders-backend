@@ -7,6 +7,15 @@ const jsonParser = bodyParser.json();
 const mongoose = require('mongoose');
 mongoose.connect('mongodb+srv://keshav:FMoyhiGQmakj5Npy@space-invaders-0xdmm.mongodb.net/space-invaders', { useNewUrlParser: true, useUnifiedTopology: true });
 
+const redis = require('redis');
+const redisSpan = 120;
+const redisConfig = {
+    host: 'redis-11619.c212.ap-south-1-1.ec2.cloud.redislabs.com',
+    port: 11619,
+    password: 'aFUbvjGyN6ltQO896XFw1SiBmRCZV7iF'
+};
+const client = redis.createClient(redisConfig);
+
 const scoreSchema = new mongoose.Schema({
     _id: Number,
     name: String,
@@ -15,41 +24,35 @@ const scoreSchema = new mongoose.Schema({
 
 const Score = mongoose.model('score', scoreSchema);
 
-app.get("/getScores/", function(req, res) {
+const PORT = process.env.PORT || 3000;
 
-    Score.find(function(err, scores) {
-        if(err) {
+function getScores(req, res) {
+    client.get('scores', (err, data) => {
+        if (err) {
             res.send('err');
-        }
-        else {
-            res.send(scores);
+        } else if (data !== null) {
+            res.send(JSON.parse(data));
+        } else {
+            Score.find(function(err, scores) {
+                if (err) {
+                    res.send('err');
+                } else {
+                    client.setex('scores', redisSpan, JSON.stringify(scores));
+                    res.send(scores);
+                }
+            });
         }
     });
+}
 
-});
-
-app.post("/getScores/", function(req, res) {
-
-    Score.find(function(err, scores) {
-        if(err) {
-            res.send('err');
-        }
-        else {
-            res.send(scores);
-        }
-    });
-
-});
-
-app.post("/setScores/", jsonParser, function(req, res) {
+function setScores(req, res) {
     const curName = req.body.name;
     const curScore = req.body.score;
     
     Score.find(function(err, scores) {
-        if(err) {
+        if (err) {
             res.send('err');
-        }
-        else {
+        } else {
             Score.remove({}).then(function() {
                 if(scores.length != 0) {
                     var flag = false;
@@ -70,9 +73,8 @@ app.post("/setScores/", jsonParser, function(req, res) {
                             name: curName,
                             score: curScore
                         });
-                    }
-                    while(scores.length > 10) {
-                        scores.pop();
+                        while(scores.length > 10)
+                            scores.pop();
                     }
                 }
                 else {
@@ -86,14 +88,18 @@ app.post("/setScores/", jsonParser, function(req, res) {
                 for(i=0 ; i<scores.length ; ++i)
                     scores[i]._id = i+1;
 
+                client.setex('scores', redisSpan, JSON.stringify(scores));
                 Score.insertMany(scores)
                     .then(res.send(scores));
             });
         }
     });
-});
+}
 
+app.get("/getScores/", getScores);
+app.post("/getScores/", getScores);
+app.post("/setScores/", jsonParser, setScores);
 
-app.listen(process.env.PORT || 3000, function() {
-    console.log('Server started at port: 3000');
+app.listen(PORT, () => {
+    console.log(`Server started at port: ${PORT}`);
 });
