@@ -48,6 +48,8 @@ function getScores(req, res) {
 }
 
 function setScores(req, res) {
+    res.setHeader('Access-Control-Allow-Origin', 'https://space-invaders-app.herokuapp.com');
+    
     const curName = req.body.name;
     const curScore = Math.ceil(req.body.score);
     const maxLength = 10;
