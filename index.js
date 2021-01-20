@@ -58,19 +58,18 @@ function setScores(req, res) {
         if (err) {
             res.send('err');
         } else {
+            res.statusCode = 201;
             Score.deleteMany({}).then(function() {
                 scores.forEach(ele => {
                     ele.score = parseInt(ele.score);
                 });
                 if (scores.length === 0) {
-                    res.statusCode = 201;
                     scores = [{
                         _id  : 1,
                         name : curName,
                         score: curScore
                     }];
                 } else if (scores.length < maxLength) {
-                    res.statusCode = 201;
                     if (scores[scores.length - 1].score > curScore) {
                         scores.push({
                             _id  : scores.length,
