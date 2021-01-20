@@ -7,8 +7,6 @@ const jsonParser = bodyParser.json();
 const mongoose = require('mongoose');
 mongoose.connect('mongodb+srv://keshav:FMoyhiGQmakj5Npy@space-invaders-0xdmm.mongodb.net/space-invaders', { useNewUrlParser: true, useUnifiedTopology: true });
 
-const cors = require('cors');
-
 const redis = require('redis');
 const redisSpan = 120;
 const redisConfig = {
@@ -119,7 +117,7 @@ app.get("/getScores/", getScores);
 app.put("/setScores/", jsonParser, setScores);
 
 app.use(function(req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
+    res.setHeader('Access-Control-Allow-Origin', 'https://space-invaders-app.herokuapp.com');
     res.setHeader('Access-Control-Allow-Methods', 'GET, PUT');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
