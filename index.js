@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb+srv://keshav:FMoyhiGQmakj5Npy@space-invaders-0xdmm.mongodb.net/space-invaders', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb+srv://keshav:lgZEEu3JQCNTU4Yn@space-invaders.pulps.mongodb.net/space-invaders?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const redis = require('redis');
 const redisSpan = 120;
