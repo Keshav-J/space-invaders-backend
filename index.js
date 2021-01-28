@@ -39,6 +39,11 @@ function getScores(req, res) {
                 if (err) {
                     res.send('err');
                 } else {
+                    scores.sort((a, b) => {
+                        if(a._id < b._id) return -1;
+                        if(a._id > b._id) return 1;
+                        return 0;
+                    });
                     client.setex('scores', redisSpan, JSON.stringify(scores));
                     res.send(scores);
                 }
