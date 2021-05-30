@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 mongoose.connect('mongodb+srv://keshav:lgZEEu3JQCNTU4Yn@space-invaders.pulps.mongodb.net/space-invaders?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const redis = require('redis');
-const redisSpan = 120;
+const redisSpan = 300;
 const redisConfig = {
     host: 'redis-11619.c212.ap-south-1-1.ec2.cloud.redislabs.com',
     port: 11619,
@@ -119,8 +119,8 @@ function setScores(req, res) {
     });
 }
 
-app.get("/getScores/", getScores);
-app.put("/setScores/", jsonParser, setScores);
+app.get("/scores", getScores);
+app.put("/scores", jsonParser, setScores);
 
 app.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', 'https://space-invaders-app.herokuapp.com');
